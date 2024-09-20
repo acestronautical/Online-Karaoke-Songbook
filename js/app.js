@@ -81,7 +81,7 @@ function setupSearch(songs) {
 
 // Set up alphabet browse functionality
 function setupAlphabetBrowse(data) {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const alphabet = '+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const alphabetDropdown = document.getElementById('alphabetDropdown');
   const artistList = document.getElementById('artistList');
   const songList = document.getElementById('songList');
@@ -107,6 +107,10 @@ function setupAlphabetBrowse(data) {
       displayArtistsByLetter(selectedLetter);
     }
   });
+
+  alphabetDropdown.value = 'A';
+  displayArtistsByLetter('A');
+
 
   // Display artists when a letter is clicked
   function displayArtistsByLetter(letter) {

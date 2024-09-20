@@ -285,8 +285,8 @@ body {
 }
 
 .tab-button {
-    padding: 8px 18px;
-    margin: 0 5px;
+    padding: 16px 16px;
+    margin: 2px;
     cursor: pointer;
     border: 1px solid #007BFF;
     background-color: #e6f7ff;
