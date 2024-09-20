@@ -1,11 +1,3 @@
-// Load the song data
-fetch('data/songs.json')
-  .then(response => response.json())
-  .then(data => {
-    setupSearch(data);
-    setupAlphabetBrowse(data);
-  })
-  .catch(error => console.error('Error loading JSON:', error));
 
 // Normalize artist names for searching (e.g., "The Beatles" -> "Beatles, The")
 function normalizeArtist(artist) {
@@ -13,11 +5,19 @@ function normalizeArtist(artist) {
   return theMatch ? `${theMatch[1]}, The` : artist;
 }
 
-// Set up Fuse.js search
-function setupSearch(data) {
-  const songs = [];
+// Load the song data
+fetch('data/songs.json')
+  .then(response => response.json())
+  .then(data => {
+    const songs = processData(data); // Process data once
+    setupSearch(songs); // Pass processed songs to setupSearch
+    setupAlphabetBrowse(data);
+  })
+  .catch(error => console.error('Error loading JSON:', error));
 
-  // Convert the data into a searchable array, normalizing artist names
+// Function to process data into a searchable array
+function processData(data) {
+  const songs = [];
   for (const artist in data) {
     const normalizedArtist = normalizeArtist(artist); // Normalize artist
     data[artist].forEach(title => {
@@ -28,13 +28,16 @@ function setupSearch(data) {
       });
     });
   }
+  return songs; // Return the processed array
+}
 
-  // Initialize Fuse.js with improved search options
+// Set up Fuse.js search
+function setupSearch(songs) {
   const options = {
-    keys: ['artist', 'title', 'combined'], // Search by artist, title, and combined fields
-    threshold: 0.2, // Adjust sensitivity (lower is stricter, higher allows more partial matches)
-    distance: 100,  // Allow partial matches across words
-    includeScore: true, // Include scores to fine-tune results if needed
+    keys: ['combined'], // Search by artist, title, and combined fields
+    threshold: 0.4, // Adjust sensitivity
+    distance: 100, // Allow partial matches across words
+    includeScore: true,
   };
   const fuse = new Fuse(songs, options);
 
@@ -52,28 +55,26 @@ function setupSearch(data) {
 
   searchInput.addEventListener('input', debounce(() => {
     const query = searchInput.value.trim().toLowerCase();
-    const results = fuse.search(query);
+    const results = fuse.search(query); // Search against cached songs
 
     // Clear previous results
     resultsList.innerHTML = '';
 
     // Display new results
-    if (query !== '') {
+    if (results.length > 0) {
       results.forEach(result => {
         const li = document.createElement('li');
         li.textContent = `${result.item.artist} - ${result.item.title}`;
         resultsList.appendChild(li);
       });
-
-      // Handle no results
-      if (results.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'No results found';
-        resultsList.appendChild(li);
-      }
+    } else {
+      const li = document.createElement('li');
+      li.textContent = 'No results found';
+      resultsList.appendChild(li);
     }
-  }, 1500));
+  }, 1500)); // Adjust debounce delay as needed
 }
+
 
 // Set up alphabet browse functionality
 function setupAlphabetBrowse(data) {
