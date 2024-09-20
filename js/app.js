@@ -32,7 +32,7 @@ function setupSearch(data) {
   // Initialize Fuse.js with improved search options
   const options = {
     keys: ['artist', 'title', 'combined'], // Search by artist, title, and combined fields
-    threshold: 0.4, // Adjust sensitivity (lower is stricter, higher allows more partial matches)
+    threshold: 0.2, // Adjust sensitivity (lower is stricter, higher allows more partial matches)
     distance: 100,  // Allow partial matches across words
     includeScore: true, // Include scores to fine-tune results if needed
   };
@@ -42,7 +42,15 @@ function setupSearch(data) {
   const searchInput = document.getElementById('searchInput');
   const resultsList = document.getElementById('resultsList');
 
-  searchInput.addEventListener('input', () => {
+  function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  searchInput.addEventListener('input', debounce(() => {
     const query = searchInput.value.trim().toLowerCase();
     const results = fuse.search(query);
 
@@ -64,7 +72,7 @@ function setupSearch(data) {
         resultsList.appendChild(li);
       }
     }
-  });
+  }, 1500));
 }
 
 // Set up alphabet browse functionality
