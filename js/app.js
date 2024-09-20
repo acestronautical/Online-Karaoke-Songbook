@@ -87,7 +87,8 @@ function setupAlphabetBrowse(data) {
   const artistNameElem = document.getElementById('artistName');
   const letterElem = document.getElementById('letter');
 
-  const itemsPerPage = 35; // Number of artists to display per page
+
+  const itemsPerPage = getColumnCount() * 7; // Number of artists to display per page
   let currentPage = 1; // Track the current page
 
   // Create alphabet navigation
