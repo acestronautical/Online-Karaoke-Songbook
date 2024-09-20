@@ -82,41 +82,39 @@ function setupSearch(songs) {
 // Set up alphabet browse functionality
 function setupAlphabetBrowse(data) {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  const alphabetList = document.getElementById('alphabetList');
+  const alphabetDropdown = document.getElementById('alphabetDropdown');
   const artistList = document.getElementById('artistList');
-  const artistListHeader = document.getElementById('artistListHeader');
   const songList = document.getElementById('songList');
   const songListHeader = document.getElementById('songListHeader');
   const artistNameElem = document.getElementById('artistName');
-  const letterElem = document.getElementById('letter');
-
 
   const itemsPerPage = getColumnCount() * 7; // Number of artists to display per page
   let currentPage = 1; // Track the current page
 
-  // Create alphabet navigation
+  // Create alphabet dropdown options
   alphabet.forEach(letter => {
-    const li = document.createElement('li');
-    li.classList.add('alphabet-letter'); // Added class for styling
-    li.textContent = letter;
-    li.style.cursor = 'pointer';
-    li.addEventListener('click', () => {
-      currentPage = 1; // Reset to first page when a new letter is clicked
-      displayArtistsByLetter(letter);
-    });
-    alphabetList.appendChild(li);
+    const option = document.createElement('option');
+    option.value = letter;
+    option.textContent = letter;
+    alphabetDropdown.appendChild(option);
+  });
+
+  // Handle dropdown change
+  alphabetDropdown.addEventListener('change', (event) => {
+    const selectedLetter = event.target.value;
+    if (selectedLetter) {
+      currentPage = 1; // Reset to first page when a new letter is selected
+      displayArtistsByLetter(selectedLetter);
+    }
   });
 
   // Display artists when a letter is clicked
   function displayArtistsByLetter(letter) {
     artistList.innerHTML = ''; // Clear previous artists
-    letterElem.textContent = letter; // Update the letter in the header
-    artistListHeader.style.display = 'block'; // Show the artist list header
     songList.innerHTML = ''; // Clear previous song lists
     songListHeader.style.display = 'none'; // Hide the song list header
     document.getElementById('paginationControls').style.display = 'block';
     artistList.style.display = 'block';
-    artistListHeader.style.display = 'block';
     // Filter and display artists starting with the selected letter
     const artists = Object.keys(data).filter(artist => normalizeArtist(artist)[0].toUpperCase() === letter);
 
@@ -229,7 +227,6 @@ function getColumnCount() {
     document.getElementById('paginationControls').style.display = 'none';
 
     artistList.style.display = 'none';
-    artistListHeader.style.display = 'none';
 
     // Populate the song list
     songs.forEach(song => {
