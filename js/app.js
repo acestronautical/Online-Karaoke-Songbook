@@ -1,3 +1,6 @@
+document.addEventListener('dblclick', function(event) {
+  event.preventDefault();
+});
 
 // Normalize artist names for searching (e.g., "The Beatles" -> "Beatles, The")
 function normalizeArtist(artist) {
@@ -150,7 +153,7 @@ function createPaginationControls(totalPages, artists) {
 
   // Current page
   const currentPageElem = document.createElement('span');
-  currentPageElem.id = 'currentPage';
+  currentPageElem.id = 'current-page';
   currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
   paginationControls.appendChild(currentPageElem);
 
@@ -174,7 +177,7 @@ function createPaginationControls(totalPages, artists) {
 
   // Function to update current page display
   function updateCurrentPageDisplay(currentPage, totalPages) {
-    const currentPageElem = document.getElementById('currentPage');
+    const currentPageElem = document.getElementById('current-page');
     currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
   }
 
@@ -199,7 +202,7 @@ function getColumnCount() {
     columnWrapper.classList.add('artist-column-wrapper'); // Added class for styling
     columnWrapper.style.display = 'grid';
     columnWrapper.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
-    columnWrapper.style.gap = '10px'; // Gap between columns
+    columnWrapper.style.gap = '5px'; // Gap between columns
 
     artistsToShow.forEach(artist => {
       const normalizedArtist = normalizeArtist(artist);
