@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karaoke Songbook</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Karaoke Songbook</h1>
+  
+  <input type="text" id="searchInput" placeholder="Search songs or artists..." />
+  <ul id="resultsList"></ul>
+  
+  <h2>Browse by Artist</h2>
+  <ul id="alphabetList"></ul>
+  
+  <h3 id="artistListHeader" style="display:none;">Artists Starting with <span id="letter"></span></h3>
+  <ul id="artistList"></ul>
+
+  <h2 id="songListHeader" style="display:none;">Songs by <span id="artistName"></span></h2>
+  <ul id="songList"></ul>
+
+  <script src="js/fuse.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

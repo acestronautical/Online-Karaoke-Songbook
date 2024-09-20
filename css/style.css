@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  #searchInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  
+  #resultsList, #artistList, #songList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #resultsList li, #artistList li, #songList li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #alphabetList {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+  
+  #alphabetList li {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    width: 30px;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  
+  #alphabetList li:hover {
+    background-color: #e0e0e0;
+  }
+  
+  #artistList li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  #artistList li {
+    cursor: pointer;
+  }
+  
