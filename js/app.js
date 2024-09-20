@@ -1,4 +1,4 @@
-document.addEventListener('dblclick', function(event) {
+document.addEventListener('dblclick', function (event) {
   event.preventDefault();
 });
 
@@ -50,7 +50,7 @@ function setupSearch(songs) {
 
   function debounce(func, delay) {
     let timeout;
-    return function(...args) {
+    return function (...args) {
       clearTimeout(timeout);
       timeout = setTimeout(() => func.apply(this, args), delay);
     };
@@ -129,48 +129,48 @@ function setupAlphabetBrowse(data) {
   }
 
   // Create pagination controls
-function createPaginationControls(totalPages, artists) {
-  const paginationControls = document.getElementById('paginationControls');
-  paginationControls.innerHTML = ''; // Clear previous controls
+  function createPaginationControls(totalPages, artists) {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear previous controls
 
-  // Previous button
-  const prevButton = document.createElement('button');
-  prevButton.classList.add('pagination-button');
-  prevButton.textContent = 'Previous';
-  prevButton.disabled = currentPage === 1;
-  prevButton.addEventListener('click', () => {
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.classList.add('pagination-button');
+    prevButton.textContent = 'Previous';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
       if (currentPage > 1) {
-          currentPage--; // Update the current page
-          displayArtists(artists); // Refresh the artist display
-          updateCurrentPageDisplay(currentPage, totalPages);
-          prevButton.disabled = currentPage === 1; // Disable if on first page
-          nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+        currentPage--; // Update the current page
+        displayArtists(artists); // Refresh the artist display
+        updateCurrentPageDisplay(currentPage, totalPages);
+        prevButton.disabled = currentPage === 1; // Disable if on first page
+        nextButton.disabled = currentPage === totalPages; // Enable/disable next button
       }
-  });
-  paginationControls.appendChild(prevButton);
+    });
+    paginationControls.appendChild(prevButton);
 
-  // Current page
-  const currentPageElem = document.createElement('span');
-  currentPageElem.id = 'current-page';
-  currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
-  paginationControls.appendChild(currentPageElem);
+    // Current page
+    const currentPageElem = document.createElement('span');
+    currentPageElem.id = 'current-page';
+    currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationControls.appendChild(currentPageElem);
 
-  // Next button
-  const nextButton = document.createElement('button');
-  nextButton.classList.add('pagination-button');
-  nextButton.textContent = 'Next';
-  nextButton.disabled = currentPage === totalPages;
-  nextButton.addEventListener('click', () => {
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.classList.add('pagination-button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
       if (currentPage < totalPages) {
-          currentPage++; // Update the current page
-          displayArtists(artists); // Refresh the artist display
-          updateCurrentPageDisplay(currentPage, totalPages);
-          prevButton.disabled = currentPage === 1; // Enable/disable previous button
-          nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+        currentPage++; // Update the current page
+        displayArtists(artists); // Refresh the artist display
+        updateCurrentPageDisplay(currentPage, totalPages);
+        prevButton.disabled = currentPage === 1; // Enable/disable previous button
+        nextButton.disabled = currentPage === totalPages; // Enable/disable next button
       }
-  });
-  paginationControls.appendChild(nextButton);
-}
+    });
+    paginationControls.appendChild(nextButton);
+  }
 
 
   // Function to update current page display
@@ -179,15 +179,15 @@ function createPaginationControls(totalPages, artists) {
     currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
   }
 
-// Function to get the column count based on screen width
-function getColumnCount() {
-  const width = window.innerWidth;
-  if (width <= 768) { // Adjust the breakpoint as needed for mobile
-    return 2; // Use 2 columns on mobile
-  } else {
-    return 5; // Use 5 columns on larger screens
+  // Function to get the column count based on screen width
+  function getColumnCount() {
+    const width = window.innerWidth;
+    if (width <= 768) { // Adjust the breakpoint as needed for mobile
+      return 2; // Use 2 columns on mobile
+    } else {
+      return 5; // Use 5 columns on larger screens
+    }
   }
-}
   // Function to display artists based on the current page in a multi-column layout
   function displayArtists(artists) {
     artistList.innerHTML = ''; // Clear any previous artists
