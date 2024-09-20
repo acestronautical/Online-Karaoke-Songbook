@@ -1,51 +1,142 @@
 body {
     font-family: Arial, sans-serif;
-  }
-  
-  #searchInput {
+    background-color: #f9f9f9; /* Light background color */
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: #333; /* Darker text color for headings */
+}
+
+#searchInput {
     width: 100%;
     padding: 10px;
     font-size: 18px;
     margin: 20px 0;
-  }
-  
-  #resultsList, #artistList, #songList {
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+}
+
+#resultsList, .artist-list, .song-list {
     list-style-type: none;
     padding: 0;
-  }
-  
-  #resultsList li, #artistList li, #songList li {
+}
+
+.results-list li, .song-item {
     padding: 10px;
     border-bottom: 1px solid #ddd;
-  }
-  
-  #alphabetList {
+    background-color: #fff; /* White background for items */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.results-list li:hover, .song-item:hover {
+    background-color: #f0f0f0; /* Light gray on hover */
+}
+
+.alphabet-list {
     display: flex;
+    justify-content: center; /* Center alphabet */
     flex-wrap: wrap;
     list-style-type: none;
     padding: 0;
     margin: 10px 0;
-  }
-  
-  #alphabetList li {
+}
+
+.alphabet-letter {
     padding: 10px;
     margin: 5px;
     border: 1px solid #ddd;
     cursor: pointer;
-    width: 30px;
+    width: 20px;
     text-align: center;
-    background-color: #f0f0f0;
-  }
-  
-  #alphabetList li:hover {
-    background-color: #e0e0e0;
-  }
-  
-  #artistList li:hover {
-    background-color: #f0f0f0;
-  }
-  
-  #artistList li {
-    cursor: pointer;
-  }
-  
+    background-color: #e6f7ff; /* Light blue background */
+    color: #007BFF; /* Blue text color */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.alphabet-letter:hover {
+    background-color: #b3e0ff; /* Darker blue on hover */
+}
+
+.artist-column-wrapper {
+    display: flex; /* Use flexbox for full width */
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Center items */
+    margin: 10px 0;
+}
+
+.artist-item:hover {
+    background-color: #f0f0f0; /* Light gray on hover */
+}
+
+#paginationControls {
+    margin-top: 20px;
+    text-align: center; /* Center pagination controls */
+}
+
+.pagination-button {
+    margin: 0 5px; /* Space between buttons */
+    padding: 5px 10px; /* Less padding for buttons */
+    font-size: 0.9em; /* Smaller font size for buttons */
+    border: 1px solid #007BFF; /* Blue border */
+    background-color: #007BFF; /* Blue background */
+    color: white; /* White text */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.pagination-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.no-artists {
+    text-align: center;
+    color: #666;
+    padding: 10px;
+}
+
+.artist-column-wrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Adjust to your desired number of columns */
+    gap: 2px; /* Space between items */
+}
+
+.artist-item {
+    flex: 1 1 30%; /* Three columns, minimum width 30% */
+    min-width: 150px; /* Ensure a minimum width for short names */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+    font-size: 0.9em; /* Smaller font size */
+    background-color: #fff; /* White background */
+    padding: 8px; /* Padding for artist items */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px;
+    text-align: center;
+    background-color: #fff; /* White background */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.artist-item:hover {
+    background-color: #f0f0f0; /* Light gray on hover */
+}
+
+.artist-list {
+    min-height: 400px; /* Set your desired height */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+#paginationControls {
+    display: flex;
+    justify-content: center; /* Center pagination controls */
+    align-items: center; /* Align items vertically */
+}
+
+#current-page {
+    margin: 0 10px; /* Space around the current page number */
+    font-size: 1em; /* Adjust font size as needed */
+}

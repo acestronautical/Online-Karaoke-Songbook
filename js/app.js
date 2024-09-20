@@ -78,12 +78,17 @@ function setupAlphabetBrowse(data) {
   const artistNameElem = document.getElementById('artistName');
   const letterElem = document.getElementById('letter');
 
+  const itemsPerPage = 35; // Number of artists to display per page
+  let currentPage = 1; // Track the current page
+
   // Create alphabet navigation
   alphabet.forEach(letter => {
     const li = document.createElement('li');
+    li.classList.add('alphabet-letter'); // Added class for styling
     li.textContent = letter;
-    li.style.cursor = 'pointer'; // Make the letters clickable
+    li.style.cursor = 'pointer';
     li.addEventListener('click', () => {
+      currentPage = 1; // Reset to first page when a new letter is clicked
       displayArtistsByLetter(letter);
     });
     alphabetList.appendChild(li);
@@ -91,42 +96,128 @@ function setupAlphabetBrowse(data) {
 
   // Display artists when a letter is clicked
   function displayArtistsByLetter(letter) {
-    artistList.innerHTML = ''; // Clear any previous artists
+    artistList.innerHTML = ''; // Clear previous artists
     letterElem.textContent = letter; // Update the letter in the header
     artistListHeader.style.display = 'block'; // Show the artist list header
-    songList.innerHTML = ''; // Clear any previous song lists
+    songList.innerHTML = ''; // Clear previous song lists
     songListHeader.style.display = 'none'; // Hide the song list header
-
+    document.getElementById('paginationControls').style.display = 'block';
+    artistList.style.display = 'block';
+    artistListHeader.style.display = 'block';
     // Filter and display artists starting with the selected letter
     const artists = Object.keys(data).filter(artist => normalizeArtist(artist)[0].toUpperCase() === letter);
 
     if (artists.length === 0) {
-      artistList.innerHTML = `<li>No artists found under ${letter}</li>`;
+      artistList.innerHTML = `<div class="no-artists">No artists found under ${letter}</div>`;
       return;
     }
 
-    artists.forEach(artist => {
+    const totalPages = Math.ceil(artists.length / itemsPerPage);
+    displayArtists(artists);
+    createPaginationControls(totalPages, artists);
+  }
+
+  // Create pagination controls
+function createPaginationControls(totalPages, artists) {
+  const paginationControls = document.getElementById('paginationControls');
+  paginationControls.innerHTML = ''; // Clear previous controls
+
+  // Previous button
+  const prevButton = document.createElement('button');
+  prevButton.classList.add('pagination-button');
+  prevButton.textContent = 'Previous';
+  prevButton.disabled = currentPage === 1;
+  prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+          currentPage--; // Update the current page
+          displayArtists(artists); // Refresh the artist display
+          updateCurrentPageDisplay(currentPage, totalPages);
+          prevButton.disabled = currentPage === 1; // Disable if on first page
+          nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+      }
+  });
+  paginationControls.appendChild(prevButton);
+
+  // Current page
+  const currentPageElem = document.createElement('span');
+  currentPageElem.id = 'currentPage';
+  currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
+  paginationControls.appendChild(currentPageElem);
+
+  // Next button
+  const nextButton = document.createElement('button');
+  nextButton.classList.add('pagination-button');
+  nextButton.textContent = 'Next';
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+          currentPage++; // Update the current page
+          displayArtists(artists); // Refresh the artist display
+          updateCurrentPageDisplay(currentPage, totalPages);
+          prevButton.disabled = currentPage === 1; // Enable/disable previous button
+          nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+      }
+  });
+  paginationControls.appendChild(nextButton);
+}
+
+
+  // Function to update current page display
+  function updateCurrentPageDisplay(currentPage, totalPages) {
+    const currentPageElem = document.getElementById('currentPage');
+    currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
+  }
+
+  // Function to display artists based on the current page in a multi-column layout
+  function displayArtists(artists) {
+    artistList.innerHTML = ''; // Clear any previous artists
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, artists.length);
+    const artistsToShow = artists.slice(startIndex, endIndex);
+
+    const columnCount = 5; // Number of columns
+    const columnWrapper = document.createElement('div');
+    columnWrapper.classList.add('artist-column-wrapper'); // Added class for styling
+    columnWrapper.style.display = 'grid';
+    columnWrapper.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
+    columnWrapper.style.gap = '10px'; // Gap between columns
+
+    artistsToShow.forEach(artist => {
       const normalizedArtist = normalizeArtist(artist);
-      const li = document.createElement('li');
-      li.textContent = normalizedArtist;
-      li.addEventListener('click', () => {
+      const artistItem = document.createElement('div');
+      artistItem.classList.add('artist-item'); // Added class for styling
+      artistItem.textContent = normalizedArtist;
+      artistItem.style.cursor = 'pointer';
+      artistItem.addEventListener('click', () => {
         displaySongsByArtist(normalizedArtist, data[artist]);
       });
-      artistList.appendChild(li);
+      columnWrapper.appendChild(artistItem);
     });
+
+    artistList.appendChild(columnWrapper); // Add the column layout to the artist list
   }
 
   // Display songs when an artist is clicked
   function displaySongsByArtist(artist, songs) {
-    songList.innerHTML = ''; // Clear any previous songs
+    songList.innerHTML = ''; // Clear previous songs
     artistNameElem.textContent = artist; // Update artist name in the header
     songListHeader.style.display = 'block'; // Show the song list header
+
+    // Hide the artist list
+    document.getElementById('paginationControls').style.display = 'none';
+
+    artistList.style.display = 'none';
+    artistListHeader.style.display = 'none';
 
     // Populate the song list
     songs.forEach(song => {
       const li = document.createElement('li');
+      li.classList.add('song-item'); // Added class for styling
       li.textContent = song;
       songList.appendChild(li);
     });
+
+    // Update current page display
   }
+
 }
