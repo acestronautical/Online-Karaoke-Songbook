@@ -168,6 +168,15 @@ function createPaginationControls(totalPages, artists) {
     currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
   }
 
+// Function to get the column count based on screen width
+function getColumnCount() {
+  const width = window.innerWidth;
+  if (width <= 768) { // Adjust the breakpoint as needed for mobile
+    return 2; // Use 2 columns on mobile
+  } else {
+    return 5; // Use 5 columns on larger screens
+  }
+}
   // Function to display artists based on the current page in a multi-column layout
   function displayArtists(artists) {
     artistList.innerHTML = ''; // Clear any previous artists
@@ -175,7 +184,7 @@ function createPaginationControls(totalPages, artists) {
     const endIndex = Math.min(startIndex + itemsPerPage, artists.length);
     const artistsToShow = artists.slice(startIndex, endIndex);
 
-    const columnCount = 5; // Number of columns
+    const columnCount = getColumnCount(); // Number of columns
     const columnWrapper = document.createElement('div');
     columnWrapper.classList.add('artist-column-wrapper'); // Added class for styling
     columnWrapper.style.display = 'grid';

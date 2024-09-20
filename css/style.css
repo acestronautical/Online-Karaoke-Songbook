@@ -140,3 +140,59 @@ h1, h2, h3 {
     margin: 0 10px; /* Space around the current page number */
     font-size: 1em; /* Adjust font size as needed */
 }
+
+body {
+    padding: 10px; /* Less padding on mobile */
+}
+
+#searchInput {
+    font-size: 16px; /* Smaller font size */
+}
+
+.alphabet-letter {
+    width: 30px; /* Wider for touch targets */
+    margin: 2px; /* Less margin */
+}
+
+.artist-column-wrapper {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive columns */
+}
+
+.artist-item {
+    min-width: 100px; /* Minimum width for touch targets */
+    padding: 5px; /* Less padding */
+}
+
+.pagination-button {
+    font-size: 0.8em; /* Smaller font size */
+    padding: 5px; /* Less padding */
+}
+
+@media (max-width: 600px) {
+    /* Adjust styles for mobile devices */
+    h1, h2, h3 {
+        font-size: 1.5em; /* Larger headings for visibility */
+    }
+
+    #resultsList, .artist-list, .song-list {
+        padding: 0; /* Remove padding for lists */
+    }
+
+    .alphabet-list {
+        flex-wrap: wrap; /* Allow wrapping for smaller screens */
+        justify-content: space-between; /* Space out letters */
+    }
+
+    .alphabet-letter {
+        flex: 1 1 15%; /* Allow more space on mobile */
+    }
+
+    .artist-item {
+        font-size: 0.9em; /* Smaller font for items */
+    }
+
+    #paginationControls {
+        flex-direction: column; /* Stack pagination controls */
+        align-items: center; /* Center controls */
+    }
+}
