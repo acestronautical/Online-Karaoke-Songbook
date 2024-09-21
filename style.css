@@ -32,6 +32,19 @@
     min-width: 100px;
 }
 
+#songListHeader {
+    text-align:left;
+}
+
+#closeSongList {
+    margin-right: 20px; 
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+    color: var(--primary-color);
+    font-size: 1.3em;
+}
+
 #paginationControls {
     align-items: center;
     display: flex;
@@ -40,7 +53,27 @@
     text-align: center;
 }
 
-#resultsList,
+#resultsList {
+    padding-left: 14px;
+    list-style-type: disc; /* Use disc bullets for the list */
+    margin-left: 20px; /* Add some margin to the left for bullets */
+}
+
+#resultsList li {
+    background-color: var(--background-light);
+    border: none; /* Remove border for a cleaner look */
+    padding: 1px 1px; /* Adjust padding for better spacing */
+    transition: background-color 0.3s;
+}
+
+#resultsList li:hover {
+    background-color: var(--primary-hover); /* Change background on hover */
+}
+
+.song-item {
+    list-style-type: none; /* Keep song items without bullets */
+}
+
 .artist-list,
 .song-list {
     list-style-type: none;
@@ -51,8 +84,9 @@
     border: 1px solid var(--accent-color);
     border-radius: 5px;
     font-size: 16px;
-    padding: 5px;
-    width: 98%;
+    padding: 8px;
+    padding-left: 14px;
+    width: 92%;
 }
 
 .active {
@@ -206,16 +240,11 @@ html {
     touch-action: pan-x pan-y;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
-    #resultsList,
     .artist-list,
     .song-list {
         padding: 0;
-    }
-
-    .artist-list {
-        min-height: 300px;
     }
 
     .alphabet-letter {

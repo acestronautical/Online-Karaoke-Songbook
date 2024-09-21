@@ -58,24 +58,29 @@ function setupSearch(songs) {
 
   searchInput.addEventListener('input', debounce(() => {
     const query = searchInput.value.trim().toLowerCase();
-    const results = fuse.search(query); // Search against cached songs
-
-    // Clear previous results
+    const results = fuse.search(query);
     resultsList.innerHTML = '';
-
-    // Display new results
-    if (results.length > 0) {
-      results.forEach(result => {
+    // Limit the number of results displayed to 50
+    const maxResultsToDisplay = 50;
+    const resultsToDisplay = results.slice(0, maxResultsToDisplay);
+    if (resultsToDisplay.length > 0) {
+      resultsToDisplay.forEach(result => {
         const li = document.createElement('li');
         li.textContent = `${result.item.artist} - ${result.item.title}`;
         resultsList.appendChild(li);
       });
+      // If there are more than 100 results, indicate that more are available
+      if (results.length > maxResultsToDisplay) {
+        const li = document.createElement('li');
+        li.textContent = `And ${results.length - maxResultsToDisplay} more...`;
+        resultsList.appendChild(li);
+      }
     } else {
       const li = document.createElement('li');
       li.textContent = 'No results found';
       resultsList.appendChild(li);
     }
-  }, 800)); // Adjust debounce delay as needed
+  }, 600));
 }
 
 
@@ -85,6 +90,7 @@ function setupAlphabetBrowse(data) {
   const alphabetDropdown = document.getElementById('alphabetDropdown');
   const artistList = document.getElementById('artistList');
   const songList = document.getElementById('songList');
+  const closeSongList = document.getElementById('closeSongList');
   const songListHeader = document.getElementById('songListHeader');
   const artistNameElem = document.getElementById('artistName');
   const paginationControls =  document.getElementById('paginationControls')
@@ -224,23 +230,37 @@ function setupAlphabetBrowse(data) {
     artistList.appendChild(columnWrapper);
   }
 
-  // Display songs when an artist is clicked
-  function displaySongsByArtist(artist, songs) {
-    songList.innerHTML = ''; // Clear previous songs
-    artistNameElem.textContent = artist; // Update artist name in the header
-    songListHeader.style.display = 'block'; // Show the song list header
 
-    paginationControls.style.display = 'none';
+// Event listener for hiding song list and song list header
+closeSongList.addEventListener('click', function () {
+  // Hide the song list and the song list header
+  songList.style.display = 'none';
+  songListHeader.style.display = 'none';
 
-    artistList.style.display = 'none';
+  // Show the artist list and pagination controls
+  artistList.style.display = 'block';
+  paginationControls.style.display = 'block';
+});
 
-    // Populate the song list
-    songs.forEach(song => {
-      const li = document.createElement('li');
-      li.classList.add('song-item'); // Added class for styling
-      li.textContent = song;
-      songList.appendChild(li);
-    });
-  }
+// Display songs when an artist is clicked
+function displaySongsByArtist(artist, songs) {
+  songList.innerHTML = ''; // Clear previous songs
+  artistNameElem.textContent = artist; // Update artist name in the header
+  songListHeader.style.display = 'block'; // Show the song list header
+  songList.style.display = 'block';
+
+  paginationControls.style.display = 'none'; // Hide pagination controls
+  artistList.style.display = 'none'; // Hide artist list
+
+  // Populate the song list
+  songs.forEach(song => {
+    const li = document.createElement('li');
+    li.classList.add('song-item'); // Added class for styling
+    li.textContent = song;
+    songList.appendChild(li);
+  });
+}
+
+
 
 }
