@@ -5,26 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karaoke Songbook</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Include the above CSS here */
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
+    <!-- Tabs -->
     <div class="tab-container">
         <button class="tab-button active" onclick="showTab('search')">Search</button>
-    <h5>Seattle Sound Entertainment</h5>
+        <h5>Seattle Sound Entertainment</h5> <!-- Change This to Your Karaoke Business Name -->
         <button class="tab-button" onclick="showTab('browse')">Browse</button>
     </div>
-
+    <!-- Search -->
     <div id="search" class="tab tab-content" style="display: block;">
         <h4>Search Songbook</h4>
         <input type="text" id="searchInput" placeholder="Search songs or artists..." />
         <ul id="resultsList"></ul>
     </div>
-
+    <!-- Browse -->
     <div id="browse" class="tab tab-content">
         <div class="dropdown-container">
             <h4>Browse by Artist</h4>
@@ -38,18 +35,15 @@
         <ul id="songList"></ul>
     </div>
 
-
-
-    <script src="js/fuse.min.js"></script>
-    <script src="js/app.js"></script>
+    <script src="fuse.min.js"></script> <!-- Search Library -->
+    <script src="app.js"></script> <!-- Main JS Code -->
     <script>
+        // Tabs Script
         function showTab(tabName) {
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.style.display = 'none');
-
             const buttons = document.querySelectorAll('.tab-button');
             buttons.forEach(button => button.classList.remove('active'));
-
             document.getElementById(tabName).style.display = 'block';
             document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
         }

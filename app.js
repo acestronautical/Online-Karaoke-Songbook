@@ -9,7 +9,7 @@ function normalizeArtist(artist) {
 }
 
 // Load the song data
-fetch('data/songs.json')
+fetch('songs.json')
   .then(response => response.json())
   .then(data => {
     const songs = processData(data); // Process data once
@@ -75,7 +75,7 @@ function setupSearch(songs) {
       li.textContent = 'No results found';
       resultsList.appendChild(li);
     }
-  }, 1500)); // Adjust debounce delay as needed
+  }, 800)); // Adjust debounce delay as needed
 }
 
 
@@ -87,7 +87,7 @@ function setupAlphabetBrowse(data) {
   const songList = document.getElementById('songList');
   const songListHeader = document.getElementById('songListHeader');
   const artistNameElem = document.getElementById('artistName');
-
+  const paginationControls =  document.getElementById('paginationControls')
   const itemsPerPage = getColumnCount() * 7; // Number of artists to display per page
   let currentPage = 1; // Track the current page
 
@@ -108,6 +108,7 @@ function setupAlphabetBrowse(data) {
     }
   });
 
+  // Start on page 'A'
   alphabetDropdown.value = 'A';
   displayArtistsByLetter('A');
 
@@ -117,11 +118,12 @@ function setupAlphabetBrowse(data) {
     artistList.innerHTML = ''; // Clear previous artists
     songList.innerHTML = ''; // Clear previous song lists
     songListHeader.style.display = 'none'; // Hide the song list header
-    document.getElementById('paginationControls').style.display = 'block';
+    paginationControls.style.display = 'block';
     artistList.style.display = 'block';
     // Filter and display artists starting with the selected letter
     const artists = Object.keys(data).filter(artist => normalizeArtist(artist)[0].toUpperCase() === letter);
 
+    // Handle if no artists with that letter
     if (artists.length === 0) {
       artistList.innerHTML = `<div class="no-artists">No artists found under ${letter}</div>`;
       return;
@@ -192,6 +194,7 @@ function setupAlphabetBrowse(data) {
       return 5; // Use 5 columns on larger screens
     }
   }
+
   // Function to display artists based on the current page in a multi-column layout
   function displayArtists(artists) {
     artistList.innerHTML = ''; // Clear any previous artists
@@ -209,7 +212,7 @@ function setupAlphabetBrowse(data) {
     artistsToShow.forEach(artist => {
       const normalizedArtist = normalizeArtist(artist);
       const artistItem = document.createElement('div');
-      artistItem.classList.add('artist-item'); // Added class for styling
+      artistItem.classList.add('artist-item');
       artistItem.textContent = normalizedArtist;
       artistItem.style.cursor = 'pointer';
       artistItem.addEventListener('click', () => {
@@ -218,7 +221,7 @@ function setupAlphabetBrowse(data) {
       columnWrapper.appendChild(artistItem);
     });
 
-    artistList.appendChild(columnWrapper); // Add the column layout to the artist list
+    artistList.appendChild(columnWrapper);
   }
 
   // Display songs when an artist is clicked
@@ -227,8 +230,7 @@ function setupAlphabetBrowse(data) {
     artistNameElem.textContent = artist; // Update artist name in the header
     songListHeader.style.display = 'block'; // Show the song list header
 
-    // Hide the artist list
-    document.getElementById('paginationControls').style.display = 'none';
+    paginationControls.style.display = 'none';
 
     artistList.style.display = 'none';
 
@@ -239,8 +241,6 @@ function setupAlphabetBrowse(data) {
       li.textContent = song;
       songList.appendChild(li);
     });
-
-    // Update current page display
   }
 
 }
