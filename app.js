@@ -56,7 +56,7 @@ function setupSearch(songs) {
     };
   }
 
-  searchInput.addEventListener('input', debounce(() => {
+  document.getElementById('searchButton').addEventListener('click', () => {
     const query = searchInput.value.trim().toLowerCase();
     const results = fuse.search(query);
     resultsList.innerHTML = '';
@@ -80,8 +80,33 @@ function setupSearch(songs) {
       li.textContent = 'No results found';
       resultsList.appendChild(li);
     }
-  }, 600));
+  });
+
+  document.getElementById('feelingLuckyButton').addEventListener('click', () => {
+    if (songs.length === 0) return; // Ensure that songs array is populated
+  
+    // Get three unique random songs
+    const randomSongs = [];
+    while (randomSongs.length < 3 && randomSongs.length < songs.length) {
+      const randomIndex = Math.floor(Math.random() * songs.length);
+      const randomSong = songs[randomIndex];
+      if (!randomSongs.includes(randomSong)) {
+        randomSongs.push(randomSong);
+      }
+    }
+  
+    // Display the random songs in the results list
+    const resultsList = document.getElementById('resultsList');
+    resultsList.innerHTML = ''; // Clear previous results
+    randomSongs.forEach(song => {
+      const li = document.createElement('li');
+      li.textContent = `${song.artist} - ${song.title}`; // Display artist and song title
+      resultsList.appendChild(li);
+    });
+  });
+  
 }
+
 
 
 // Set up alphabet browse functionality
