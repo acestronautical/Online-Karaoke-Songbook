@@ -60,16 +60,21 @@ function setupSearch(songs) {
     const query = searchInput.value.trim().toLowerCase();
     const results = fuse.search(query);
     resultsList.innerHTML = '';
-    // Limit the number of results displayed to 50
     const maxResultsToDisplay = 50;
     const resultsToDisplay = results.slice(0, maxResultsToDisplay);
+    
     if (resultsToDisplay.length > 0) {
       resultsToDisplay.forEach(result => {
         const li = document.createElement('li');
-        li.textContent = `${result.item.artist} - ${result.item.title}`;
+        const a = document.createElement('a'); // Create a link
+        const searchQuery = `${result.item.artist} ${result.item.title}`;
+        a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
+        a.target = '_blank'; // Open in a new tab
+        a.textContent = `${result.item.artist} - ${result.item.title}`;
+        li.appendChild(a); // Append the link to the list item
         resultsList.appendChild(li);
       });
-      // If there are more than 100 results, indicate that more are available
+      
       if (results.length > maxResultsToDisplay) {
         const li = document.createElement('li');
         li.textContent = `And ${results.length - maxResultsToDisplay} more...`;
@@ -81,11 +86,10 @@ function setupSearch(songs) {
       resultsList.appendChild(li);
     }
   });
-
-  document.getElementById('feelingLuckyButton').addEventListener('click', () => {
-    if (songs.length === 0) return; // Ensure that songs array is populated
   
-    // Get three unique random songs
+  document.getElementById('feelingLuckyButton').addEventListener('click', () => {
+    if (songs.length === 0) return;
+    
     const randomSongs = [];
     while (randomSongs.length < 3 && randomSongs.length < songs.length) {
       const randomIndex = Math.floor(Math.random() * songs.length);
@@ -94,16 +98,21 @@ function setupSearch(songs) {
         randomSongs.push(randomSong);
       }
     }
-  
-    // Display the random songs in the results list
+    
     const resultsList = document.getElementById('resultsList');
-    resultsList.innerHTML = ''; // Clear previous results
+    resultsList.innerHTML = '';
     randomSongs.forEach(song => {
       const li = document.createElement('li');
-      li.textContent = `${song.artist} - ${song.title}`; // Display artist and song title
+      const a = document.createElement('a'); // Create a link
+      const searchQuery = `${song.artist} ${song.title}`;
+      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
+      a.target = '_blank'; // Open in a new tab
+      a.textContent = `${song.artist} - ${song.title}`;
+      li.appendChild(a); // Append the link to the list item
       resultsList.appendChild(li);
     });
   });
+  
   
 }
 
@@ -269,20 +278,23 @@ function setupAlphabetBrowse(data) {
 
   // Display songs when an artist is clicked
   function displaySongsByArtist(artist, songs) {
-    songList.innerHTML = ''; // Clear previous songs
-    artistNameElem.textContent = artist; // Update artist name in the header
-    songListHeader.style.display = 'block'; // Show the song list header
+    songList.innerHTML = ''; 
+    artistNameElem.textContent = artist;
+    songListHeader.style.display = 'block'; 
     songList.style.display = 'block';
-
-    paginationControls.style.display = 'none'; // Hide pagination controls
-    artistList.style.display = 'none'; // Hide artist list
-
-    // Populate the song list
+    
+    paginationControls.style.display = 'none'; 
+    artistList.style.display = 'none';
+  
     songs.forEach(song => {
       const li = document.createElement('li');
-      li.classList.add('song-item'); // Added class for styling
-      li.textContent = song;
+      const a = document.createElement('a'); // Create a link
+      const searchQuery = `${artist} ${song}`;
+      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
+      a.target = '_blank'; // Open in a new tab
+      a.textContent = song;
+      li.appendChild(a); // Append the link to the list item
       songList.appendChild(li);
     });
-  }
+  }  
 }

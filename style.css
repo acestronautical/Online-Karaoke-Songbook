@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #007bff;
+    --primary-color: #1a76d9;
     /* Standard blue for primary actions */
     --primary-hover: #c8d3de;
     /* Darker blue for hover */
@@ -75,11 +75,6 @@
     padding: 1px 1px;
     /* Adjust padding for better spacing */
     transition: background-color 0.3s;
-}
-
-#resultsList li:hover {
-    background-color: var(--primary-hover);
-    /* Change background on hover */
 }
 
 .song-item {
@@ -261,6 +256,16 @@
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 5px;
+}
+
+a {
+    color: var(--text-dark);
+    text-decoration: none; 
+}
+
+a:hover {
+    color: var(--primary-hover); /* Optional hover color */
+    text-decoration: none; /* Ensure no underline on hover */
 }
 
 body {
