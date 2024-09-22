@@ -93,7 +93,7 @@ function setupAlphabetBrowse(data) {
   const closeSongList = document.getElementById('closeSongList');
   const songListHeader = document.getElementById('songListHeader');
   const artistNameElem = document.getElementById('artistName');
-  const paginationControls =  document.getElementById('paginationControls')
+  const paginationControls = document.getElementById('paginationControls')
   const itemsPerPage = getColumnCount() * 7; // Number of artists to display per page
   let currentPage = 1; // Track the current page
 
@@ -231,36 +231,33 @@ function setupAlphabetBrowse(data) {
   }
 
 
-// Event listener for hiding song list and song list header
-closeSongList.addEventListener('click', function () {
-  // Hide the song list and the song list header
-  songList.style.display = 'none';
-  songListHeader.style.display = 'none';
+  // Event listener for hiding song list and song list header
+  closeSongList.addEventListener('click', function () {
+    // Hide the song list and the song list header
+    songList.style.display = 'none';
+    songListHeader.style.display = 'none';
 
-  // Show the artist list and pagination controls
-  artistList.style.display = 'block';
-  paginationControls.style.display = 'block';
-});
-
-// Display songs when an artist is clicked
-function displaySongsByArtist(artist, songs) {
-  songList.innerHTML = ''; // Clear previous songs
-  artistNameElem.textContent = artist; // Update artist name in the header
-  songListHeader.style.display = 'block'; // Show the song list header
-  songList.style.display = 'block';
-
-  paginationControls.style.display = 'none'; // Hide pagination controls
-  artistList.style.display = 'none'; // Hide artist list
-
-  // Populate the song list
-  songs.forEach(song => {
-    const li = document.createElement('li');
-    li.classList.add('song-item'); // Added class for styling
-    li.textContent = song;
-    songList.appendChild(li);
+    // Show the artist list and pagination controls
+    artistList.style.display = 'block';
+    paginationControls.style.display = 'block';
   });
-}
 
+  // Display songs when an artist is clicked
+  function displaySongsByArtist(artist, songs) {
+    songList.innerHTML = ''; // Clear previous songs
+    artistNameElem.textContent = artist; // Update artist name in the header
+    songListHeader.style.display = 'block'; // Show the song list header
+    songList.style.display = 'block';
 
+    paginationControls.style.display = 'none'; // Hide pagination controls
+    artistList.style.display = 'none'; // Hide artist list
 
+    // Populate the song list
+    songs.forEach(song => {
+      const li = document.createElement('li');
+      li.classList.add('song-item'); // Added class for styling
+      li.textContent = song;
+      songList.appendChild(li);
+    });
+  }
 }

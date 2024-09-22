@@ -1,10 +1,16 @@
 :root {
-    --primary-color: #007bff; /* Standard blue for primary actions */
-    --primary-hover: #c8d3de; /* Darker blue for hover */
-    --accent-color: #d2dbe2; /* Neutral gray for accents */
-    --background-light: #f8f9fa; /* Light gray background for a clean look */
-    --text-dark: #343a40; /* Dark gray for readable text */
-    --text-light: #ffffff; /* White for contrast text */
+    --primary-color: #007bff;
+    /* Standard blue for primary actions */
+    --primary-hover: #c8d3de;
+    /* Darker blue for hover */
+    --accent-color: #d2dbe2;
+    /* Neutral gray for accents */
+    --background-light: #f8f9fa;
+    /* Light gray background for a clean look */
+    --text-dark: #343a40;
+    /* Dark gray for readable text */
+    --text-light: #ffffff;
+    /* White for contrast text */
 }
 
 
@@ -33,16 +39,16 @@
 }
 
 #songListHeader {
-    text-align:left;
+    text-align: left;
 }
 
 #closeSongList {
-    margin-right: 20px; 
+    margin-right: 20px;
     cursor: pointer;
     border: none;
     color: var(--primary-color);
     font-size: 1.4em;
-    background-color:transparent;
+    background-color: transparent;
 }
 
 #paginationControls {
@@ -56,23 +62,29 @@
 
 #resultsList {
     padding-left: 14px;
-    list-style-type: disc; /* Use disc bullets for the list */
-    margin-left: 20px; /* Add some margin to the left for bullets */
+    list-style-type: disc;
+    /* Use disc bullets for the list */
+    margin-left: 20px;
+    /* Add some margin to the left for bullets */
 }
 
 #resultsList li {
     background-color: var(--background-light);
-    border: none; /* Remove border for a cleaner look */
-    padding: 1px 1px; /* Adjust padding for better spacing */
+    border: none;
+    /* Remove border for a cleaner look */
+    padding: 1px 1px;
+    /* Adjust padding for better spacing */
     transition: background-color 0.3s;
 }
 
 #resultsList li:hover {
-    background-color: var(--primary-hover); /* Change background on hover */
+    background-color: var(--primary-hover);
+    /* Change background on hover */
 }
 
 .song-item {
-    list-style-type: none; /* Keep song items without bullets */
+    list-style-type: none;
+    /* Keep song items without bullets */
 }
 
 #artistName {
@@ -148,12 +160,15 @@
     font-size: 0.85em;
     min-width: 100px;
     padding: 5px;
-    display: flex; /* Enable Flexbox */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
+    display: flex;
+    /* Enable Flexbox */
+    align-items: center;
+    /* Center vertically */
+    justify-content: center;
+    /* Center horizontally */
     transition: background-color 0.3s;
     font-family: serif;
-    text-align:center;
+    text-align: center;
     text-align-last: center;
 }
 
@@ -202,7 +217,8 @@
 .results-list li:hover,
 .song-item:hover,
 .artist-item:hover {
-    background-color: var(--primary-hover); /* Light yellow hover */
+    background-color: var(--primary-hover);
+    /* Light yellow hover */
 }
 
 .tab {
