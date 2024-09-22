@@ -43,12 +43,14 @@
 }
 
 #closeSongList {
-    margin-right: 20px;
+    margin-right: 14px;
     cursor: pointer;
     border: none;
     color: var(--primary-color);
-    font-size: 1.4em;
+    font-size: 1.6em;
     background-color: transparent;
+    font-weight: bold;
+    transform: translateY(4px);
 }
 
 #paginationControls {
