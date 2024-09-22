@@ -60,7 +60,7 @@ function setupSearch(songs) {
     const query = searchInput.value.trim().toLowerCase();
     const results = fuse.search(query);
     resultsList.innerHTML = '';
-    const maxResultsToDisplay = 50;
+    const maxResultsToDisplay = 100;
     const resultsToDisplay = results.slice(0, maxResultsToDisplay);
     
     if (resultsToDisplay.length > 0) {
