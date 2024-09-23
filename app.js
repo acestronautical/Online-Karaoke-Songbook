@@ -1,53 +1,46 @@
-document.addEventListener('dblclick', function (event) {
-  event.preventDefault();
-});
+// Prevent default double-click behavior
+document.addEventListener('dblclick', (event) => event.preventDefault());
 
-// Normalize artist names for searching (e.g., "The Beatles" -> "Beatles, The")
+// Normalize artist names for consistent search (e.g., "The Beatles" -> "Beatles, The")
 function normalizeArtist(artist) {
   const theMatch = artist.match(/^The\s(.+)/i);
   return theMatch ? `${theMatch[1]}, The` : artist;
 }
 
-// Load the song data
+// Load and process song data
 fetch('songs.json')
   .then(response => response.json())
   .then(data => {
-    const songs = processData(data); // Process data once
-    setupSearch(songs); // Pass processed songs to setupSearch
+    const songs = processData(data);
+    setupSearch(songs);
     setupAlphabetBrowse(data);
   })
   .catch(error => console.error('Error loading JSON:', error));
 
-// Function to process data into a searchable array
+// Process data into a searchable format
 function processData(data) {
-  const songs = [];
-  for (const artist in data) {
-    const normalizedArtist = normalizeArtist(artist); // Normalize artist
-    data[artist].forEach(title => {
-      songs.push({
-        artist: normalizedArtist,
-        title: title,
-        combined: `${normalizedArtist} ${title}` // Combined field for better search
-      });
-    });
-  }
-  return songs; // Return the processed array
+  return Object.entries(data).flatMap(([artist, titles]) =>
+    titles.map(title => ({
+      artist: normalizeArtist(artist),
+      title,
+      combined: `${normalizeArtist(artist)} ${title}`.toLowerCase()
+    }))
+  );
 }
 
-// Set up Fuse.js search
+// Set up Fuse.js search functionality
 function setupSearch(songs) {
   const options = {
-    keys: ['combined'], // Search by artist, title, and combined fields
-    threshold: 0.4, // Adjust sensitivity
-    distance: 100, // Allow partial matches across words
+    keys: ['combined'],
+    threshold: 0.33,
+    ignoreLocation: true,
     includeScore: true,
   };
   const fuse = new Fuse(songs, options);
-
-  // Handle search input
   const searchInput = document.getElementById('searchInput');
   const resultsList = document.getElementById('resultsList');
 
+  // Debounce function to limit the frequency of search execution
   function debounce(func, delay) {
     let timeout;
     return function (...args) {
@@ -56,28 +49,52 @@ function setupSearch(songs) {
     };
   }
 
+  // Handle search button click
   document.getElementById('searchButton').addEventListener('click', () => {
-    const query = searchInput.value.trim().toLowerCase();
-    const results = fuse.search(query);
+    const query = searchInput.value.trim();
+    const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
     resultsList.innerHTML = '';
-    const maxResultsToDisplay = 100;
-    const resultsToDisplay = results.slice(0, maxResultsToDisplay);
-    
-    if (resultsToDisplay.length > 0) {
-      resultsToDisplay.forEach(result => {
+
+    if (!tokens.length) return;
+
+    const scoreMap = new Map();
+
+    tokens.forEach(token => {
+      fuse.search(token).forEach(({ item, score }) => {
+        const entry = scoreMap.get(item) || { totalScore: 0, count: 0 };
+        scoreMap.set(item, {
+          totalScore: entry.totalScore + score,
+          count: entry.count + 1,
+        });
+      });
+    });
+
+    const results = Array.from(scoreMap.entries())
+    .filter(([_, data]) => data.count >= Math.ceil(tokens.length * 0.8)) // Require at least 80% match
+    .map(([item, data]) => ({ item, averageScore: data.totalScore / data.count }))
+    .sort((a, b) => a.averageScore - b.averageScore);
+
+    displayResults(results);
+  });
+
+  // Display search results
+  function displayResults(results) {
+    const maxResults = 100;
+    const resultsToDisplay = results.slice(0, maxResults);
+
+    if (resultsToDisplay.length) {
+      resultsToDisplay.forEach(({ item }) => {
         const li = document.createElement('li');
-        const a = document.createElement('a'); // Create a link
-        const searchQuery = `${result.item.artist} ${result.item.title}`;
-        a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
-        a.target = '_blank'; // Open in a new tab
-        a.textContent = `${result.item.artist} - ${result.item.title}`;
-        li.appendChild(a); // Append the link to the list item
+        const a = document.createElement('a');
+        a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(item.artist + ' ' + item.title)}`;
+        a.target = '_blank';
+        a.textContent = `${item.artist} - ${item.title}`;
+        li.appendChild(a);
         resultsList.appendChild(li);
       });
-      
-      if (results.length > maxResultsToDisplay) {
+      if (results.length > maxResults) {
         const li = document.createElement('li');
-        li.textContent = `And ${results.length - maxResultsToDisplay} more...`;
+        li.textContent = `And ${results.length - maxResults} more...`;
         resultsList.appendChild(li);
       }
     } else {
@@ -85,40 +102,25 @@ function setupSearch(songs) {
       li.textContent = 'No results found';
       resultsList.appendChild(li);
     }
-  });
-  
+  }
+
+  // Handle "Feeling Lucky" button
   document.getElementById('feelingLuckyButton').addEventListener('click', () => {
-    if (songs.length === 0) return;
-    
-    const randomSongs = [];
-    while (randomSongs.length < 3 && randomSongs.length < songs.length) {
-      const randomIndex = Math.floor(Math.random() * songs.length);
-      const randomSong = songs[randomIndex];
-      if (!randomSongs.includes(randomSong)) {
-        randomSongs.push(randomSong);
-      }
-    }
-    
-    const resultsList = document.getElementById('resultsList');
+    const randomSongs = [...songs].sort(() => 0.5 - Math.random()).slice(0, 3);
     resultsList.innerHTML = '';
     randomSongs.forEach(song => {
       const li = document.createElement('li');
-      const a = document.createElement('a'); // Create a link
-      const searchQuery = `${song.artist} ${song.title}`;
-      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
-      a.target = '_blank'; // Open in a new tab
+      const a = document.createElement('a');
+      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artist + ' ' + song.title)}`;
+      a.target = '_blank';
       a.textContent = `${song.artist} - ${song.title}`;
-      li.appendChild(a); // Append the link to the list item
+      li.appendChild(a);
       resultsList.appendChild(li);
     });
   });
-  
-  
 }
 
-
-
-// Set up alphabet browse functionality
+// Set up alphabet-based browsing functionality
 function setupAlphabetBrowse(data) {
   const alphabet = '+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const alphabetDropdown = document.getElementById('alphabetDropdown');
@@ -127,11 +129,10 @@ function setupAlphabetBrowse(data) {
   const closeSongList = document.getElementById('closeSongList');
   const songListHeader = document.getElementById('songListHeader');
   const artistNameElem = document.getElementById('artistName');
-  const paginationControls = document.getElementById('paginationControls')
-  const itemsPerPage = getColumnCount() * 7; // Number of artists to display per page
-  let currentPage = 1; // Track the current page
+  const paginationControls = document.getElementById('paginationControls');
+  const itemsPerPage = getColumnCount() * 7;
+  let currentPage = 1;
 
-  // Create alphabet dropdown options
   alphabet.forEach(letter => {
     const option = document.createElement('option');
     option.value = letter;
@@ -139,32 +140,24 @@ function setupAlphabetBrowse(data) {
     alphabetDropdown.appendChild(option);
   });
 
-  // Handle dropdown change
   alphabetDropdown.addEventListener('change', (event) => {
-    const selectedLetter = event.target.value;
-    if (selectedLetter) {
-      currentPage = 1; // Reset to first page when a new letter is selected
-      displayArtistsByLetter(selectedLetter);
-    }
+    currentPage = 1;
+    displayArtistsByLetter(event.target.value);
   });
 
-  // Start on page 'A'
   alphabetDropdown.value = 'A';
   displayArtistsByLetter('A');
 
-
-  // Display artists when a letter is clicked
+  // Display artists based on selected letter
   function displayArtistsByLetter(letter) {
-    artistList.innerHTML = ''; // Clear previous artists
-    songList.innerHTML = ''; // Clear previous song lists
-    songListHeader.style.display = 'none'; // Hide the song list header
+    artistList.innerHTML = '';
+    songList.innerHTML = '';
+    songListHeader.style.display = 'none';
     paginationControls.style.display = 'block';
     artistList.style.display = 'block';
-    // Filter and display artists starting with the selected letter
-    const artists = Object.keys(data).filter(artist => normalizeArtist(artist)[0].toUpperCase() === letter);
 
-    // Handle if no artists with that letter
-    if (artists.length === 0) {
+    const artists = Object.keys(data).filter(artist => normalizeArtist(artist)[0].toUpperCase() === letter);
+    if (!artists.length) {
       artistList.innerHTML = `<div class="no-artists">No artists found under ${letter}</div>`;
       return;
     }
@@ -176,125 +169,107 @@ function setupAlphabetBrowse(data) {
 
   // Create pagination controls
   function createPaginationControls(totalPages, artists) {
-    const paginationControls = document.getElementById('paginationControls');
-    paginationControls.innerHTML = ''; // Clear previous controls
+    paginationControls.innerHTML = '';
 
-    // Previous button
-    const prevButton = document.createElement('button');
-    prevButton.classList.add('pagination-button');
-    prevButton.textContent = 'Previous';
-    prevButton.disabled = currentPage === 1;
-    prevButton.addEventListener('click', () => {
+    const prevButton = createPaginationButton('Previous', currentPage === 1, () => {
       if (currentPage > 1) {
-        currentPage--; // Update the current page
-        displayArtists(artists); // Refresh the artist display
-        updateCurrentPageDisplay(currentPage, totalPages);
-        prevButton.disabled = currentPage === 1; // Disable if on first page
-        nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+        currentPage--;
+        displayArtists(artists);
+        updatePaginationStatus(totalPages);
       }
     });
     paginationControls.appendChild(prevButton);
 
-    // Current page
     const currentPageElem = document.createElement('span');
     currentPageElem.id = 'current-page';
     currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
     paginationControls.appendChild(currentPageElem);
 
-    // Next button
-    const nextButton = document.createElement('button');
-    nextButton.classList.add('pagination-button');
-    nextButton.textContent = 'Next';
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener('click', () => {
+    const nextButton = createPaginationButton('Next', currentPage === totalPages, () => {
       if (currentPage < totalPages) {
-        currentPage++; // Update the current page
-        displayArtists(artists); // Refresh the artist display
-        updateCurrentPageDisplay(currentPage, totalPages);
-        prevButton.disabled = currentPage === 1; // Enable/disable previous button
-        nextButton.disabled = currentPage === totalPages; // Enable/disable next button
+        currentPage++;
+        displayArtists(artists);
+        updatePaginationStatus(totalPages);
       }
     });
     paginationControls.appendChild(nextButton);
   }
 
-
-  // Function to update current page display
-  function updateCurrentPageDisplay(currentPage, totalPages) {
-    const currentPageElem = document.getElementById('current-page');
-    currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
+  // Helper to create pagination buttons
+  function createPaginationButton(text, disabled, onClick) {
+    const button = document.createElement('button');
+    button.classList.add('pagination-button');
+    button.textContent = text;
+    button.disabled = disabled;
+    button.addEventListener('click', onClick);
+    return button;
   }
 
-  // Function to get the column count based on screen width
-  function getColumnCount() {
-    const width = window.innerWidth;
-    if (width <= 768) { // Adjust the breakpoint as needed for mobile
-      return 2; // Use 2 columns on mobile
-    } else {
-      return 5; // Use 5 columns on larger screens
-    }
+  // Update pagination status
+  function updatePaginationStatus(totalPages) {
+    document.getElementById('current-page').textContent = `Page ${currentPage} of ${totalPages}`;
   }
 
-  // Function to display artists based on the current page in a multi-column layout
+  // Display artists based on the current page
   function displayArtists(artists) {
-    artistList.innerHTML = ''; // Clear any previous artists
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, artists.length);
-    const artistsToShow = artists.slice(startIndex, endIndex);
-
-    const columnCount = getColumnCount(); // Number of columns
+    artistList.innerHTML = '';
+    const artistsToShow = artists.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const columnWrapper = document.createElement('div');
-    columnWrapper.classList.add('artist-column-wrapper'); // Added class for styling
+    columnWrapper.classList.add('artist-column-wrapper');
     columnWrapper.style.display = 'grid';
-    columnWrapper.style.gridTemplateColumns = `repeat(${columnCount}, 1fr)`;
-    columnWrapper.style.gap = '5px'; // Gap between columns
+    columnWrapper.style.gridTemplateColumns = `repeat(${getColumnCount()}, 1fr)`;
+    columnWrapper.style.gap = '5px';
 
     artistsToShow.forEach(artist => {
-      const normalizedArtist = normalizeArtist(artist);
       const artistItem = document.createElement('div');
       artistItem.classList.add('artist-item');
-      artistItem.textContent = normalizedArtist;
+      artistItem.textContent = normalizeArtist(artist);
       artistItem.style.cursor = 'pointer';
-      artistItem.addEventListener('click', () => {
-        displaySongsByArtist(normalizedArtist, data[artist]);
-      });
+      artistItem.addEventListener('click', () => displaySongsByArtist(normalizeArtist(artist), data[artist]));
       columnWrapper.appendChild(artistItem);
     });
 
     artistList.appendChild(columnWrapper);
   }
 
-
-  // Event listener for hiding song list and song list header
-  closeSongList.addEventListener('click', function () {
-    // Hide the song list and the song list header
+  // Close song list
+  closeSongList.addEventListener('click', () => {
     songList.style.display = 'none';
     songListHeader.style.display = 'none';
-
-    // Show the artist list and pagination controls
     artistList.style.display = 'block';
     paginationControls.style.display = 'block';
   });
 
-  // Display songs when an artist is clicked
+  // Display songs for the selected artist
   function displaySongsByArtist(artist, songs) {
-    songList.innerHTML = ''; 
+    songList.innerHTML = '';
     artistNameElem.textContent = artist;
-    songListHeader.style.display = 'block'; 
+    songListHeader.style.display = 'block';
     songList.style.display = 'block';
-    
-    paginationControls.style.display = 'none'; 
+    paginationControls.style.display = 'none';
     artistList.style.display = 'none';
-  
+
     songs.forEach(song => {
       const li = document.createElement('li');
-      const a = document.createElement('a'); // Create a link
-      const searchQuery = `${artist} ${song}`;
-      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`; // Set the search URL
-      a.target = '_blank'; // Open in a new tab
+      const a = document.createElement('a');
+      a.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(`${artist} ${song}`)}`;
+      a.target = '_blank';
       a.textContent = song;
-      li.appendChild(a); // Append the link to the list item
+      li.appendChild(a);
       songList.appendChild(li);
     });
-  }  
+  }
+
+  // Dynamically adjust column count based on window width
+  function getColumnCount() {
+    const windowWidth = window.innerWidth;
+    if (windowWidth >= 1200) return 4;
+    if (windowWidth >= 800) return 3;
+    return 2;
+  }
+
+  window.addEventListener('resize', () => {
+    const currentLetter = alphabetDropdown.value;
+    displayArtistsByLetter(currentLetter);
+  });
 }
