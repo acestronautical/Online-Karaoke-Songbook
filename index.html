@@ -20,10 +20,12 @@
         <h4>Search Songbook</h4>
         <input type="text" id="searchInput" placeholder="Search songs or artists..." />
         <div id="searchButtonContainer">
-        <button id="searchButton">Search Songs</button>
-        <button id="feelingLuckyButton">I'm Feeling Lucky</button>
+            <button id="searchButton">Search Songs</button>
+            <button id="feelingLuckyButton">I'm Feeling Lucky</button>
         </div>
-        <ul id="resultsList"></ul>
+        <ul id="resultsList">
+            Can't find your song? Just ask! We might still have it or can order it for next time!
+        </ul>
     </div>
     <!-- Browse -->
     <div id="browse" class="tab tab-content">
@@ -36,8 +38,8 @@
         <ul class="artist-list" id="artistList"></ul>
         <div id="paginationControls"></div>
         <h5 id="songListHeader" style="display:none;">
-        <button id="closeSongList">&larr;</button>
-                <span id="artistName"></span>
+            <button id="closeSongList">&larr;</button>
+            <span id="artistName"></span>
         </h5>
         <ul id="songList" style="display:none;"></ul>
     </div>

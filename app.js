@@ -171,7 +171,7 @@ function setupAlphabetBrowse(data) {
   function createPaginationControls(totalPages, artists) {
     paginationControls.innerHTML = '';
 
-    const prevButton = createPaginationButton('Previous', currentPage === 1, () => {
+    const prevButton = createPaginationButton('Previous', () => {
       if (currentPage > 1) {
         currentPage--;
         displayArtists(artists);
@@ -185,7 +185,7 @@ function setupAlphabetBrowse(data) {
     currentPageElem.textContent = `Page ${currentPage} of ${totalPages}`;
     paginationControls.appendChild(currentPageElem);
 
-    const nextButton = createPaginationButton('Next', currentPage === totalPages, () => {
+    const nextButton = createPaginationButton('Next', () => {
       if (currentPage < totalPages) {
         currentPage++;
         displayArtists(artists);
@@ -196,11 +196,11 @@ function setupAlphabetBrowse(data) {
   }
 
   // Helper to create pagination buttons
-  function createPaginationButton(text, disabled, onClick) {
+  function createPaginationButton(text, onClick) {
     const button = document.createElement('button');
     button.classList.add('pagination-button');
+    button.id = 'pagination-button-' + text.toLowerCase();
     button.textContent = text;
-    button.disabled = disabled;
     button.addEventListener('click', onClick);
     return button;
   }
